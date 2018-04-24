@@ -1,0 +1,21 @@
+version: '3'
+services:
+  stubby:
+    image: "mvance/stubby:latest"
+    networks:
+     - dns
+    restart: on-failure:5
+  unbound:
+    image: "mvance/unbound:1.7.0-stubby"
+    depends_on:
+      - "stubby"    
+    ports:
+     - "53:53/udp"
+    networks:
+     - dns
+    volumes:
+      - ./unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro
+    restart: on-failure:5
+
+networks:
+  dns:
