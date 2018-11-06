@@ -33,13 +33,13 @@ FROM debian:stretch
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    UNBOUND_VERSION=1.7.3 \
-    UNBOUND_SHA256=c11de115d928a6b48b2165e0214402a7a7da313cd479203a7ce7a8b62cba602d \
-    UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.7.3.tar.gz \
-    VERSION=0
+    UNBOUND_VERSION=1.8.1 \
+    UNBOUND_SHA256=c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d \
+    UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.8.1.tar.gz \
+    VERSION=1
 
 ENV SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
-    DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver." 
+    DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
 
 LABEL summary="${SUMMARY}" \
       description="${DESCRIPTION}" \
@@ -66,7 +66,7 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-1.7.3 && \
+    cd unbound-${UNBOUND_VERSION} && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
