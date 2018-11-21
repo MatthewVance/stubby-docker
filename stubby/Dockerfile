@@ -1,8 +1,8 @@
 FROM debian:stretch as builder
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1 \
-    SHA256_OPENSSL=2836875a0f89c03d0fdf483941512613a50cfb421d6fd94b9f41d7279d586a3d \
+ENV VERSION_OPENSSL=openssl-1.1.1a \
+    SHA256_OPENSSL=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
     GPG_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
