@@ -44,7 +44,7 @@ round_robin_upstreams: 0
 # Require DNSSEC validation. For releases earlier than 1.2 a trust anchor must
 # be configured configured manually. This can be done with unbound-anchor.
 #
-# dnssec_return_status: GETDNS_EXTENSION_TRUE
+dnssec_return_status: GETDNS_EXTENSION_TRUE
 
 # Specify the location of the installed trust anchor file (leave commented out
 # for zero configuration DNSSEC)
