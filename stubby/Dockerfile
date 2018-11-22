@@ -39,9 +39,10 @@ WORKDIR /tmp/src
 COPY --from=builder /opt/openssl /opt/openssl
 
 RUN set -e -x && \
-    BUILD_DEPS='autoconf build-essential ca-certificates dh-autoreconf git libssl-dev libtool-bin libyaml-dev make m4' && \
+    BUILD_DEPS='autoconf build-essential dh-autoreconf git libssl-dev libtool-bin libyaml-dev make m4' && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $BUILD_DEPS \
+      ca-certificates \
       dns-root-data \
       libev4 \
       libevent-core-2.0.5 \

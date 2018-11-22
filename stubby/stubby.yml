@@ -51,6 +51,9 @@ dnssec_return_status: GETDNS_EXTENSION_TRUE
 #
 # dnssec_trust_anchors: "/etc/unbound/getdns-root.key"
 
+# Set the CA store
+tls_ca_path: "/etc/ssl/certs/"
+
 # Control the maximum number of connection failures that will be permitted
 # before Stubby backs-off from using an individual upstream (default 2)
 #
