@@ -75,11 +75,6 @@ server:
   include: /opt/unbound/etc/unbound/a-records.conf
   forward-zone:
     name: "."
-    #forward-addr: 9.9.9.9
-    #forward-addr: 149.112.112.112
-    #forward-addr: 2620:fe::fe
-    #forward-tls-upstream: yes
-    #forward-addr: 172.16.238.2@8053
     forward-host: stubby@8053
 
 remote-control:
