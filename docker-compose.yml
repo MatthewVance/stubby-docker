@@ -4,7 +4,7 @@ services:
     image: "mvance/stubby:latest"
     networks:
      - dns
-    restart: on-failure:5
+    restart: unless-stopped
   unbound:
     image: "mvance/unbound:1.8.1-stubby"
     depends_on:
@@ -15,7 +15,7 @@ services:
      - dns
     volumes:
       - ./unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf:ro
-    restart: on-failure:5
+    restart: unless-stopped
 
 networks:
   dns:
