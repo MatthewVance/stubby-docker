@@ -9,7 +9,7 @@ According to the [Stubby documentation](https://dnsprivacy.org/wiki/display/DP/A
 >
 >However, Unbound is a more mature and stable daemon and may be more reliable today. 
 
-To achieve this, this setup uses two containers, one running Stubby and another running Unbound. Unbound exposes DNS over port 53 and forwards requests not in its cache to the Stubby container on port 8053 (not publically exposed). Stubby then performs DNS resolution over TLS. By default, this is configured to use Quad9 DNS, but the included `stubby.yml` shows how to switch it to Cloudflare DNS if that's your preferece. 
+To achieve this, this setup uses two containers, one running Stubby and another running Unbound. Unbound exposes DNS over port 53 and forwards requests not in its cache to the Stubby container on port 8053 (not publically exposed). Stubby then performs DNS resolution over TLS. By default, this is configured to use Cloudflare DNS. 
 
 ## How to use
 

@@ -15,11 +15,15 @@ if [ $nproc -gt 1 ]; then
 else
     threads=1
 fi
+stubby_ip=$(ping -4 -c 1 stubby | head -n 1 | cut -d ' ' -f 3 | cut -d '(' -f 2 | cut -d ')' -f 1)
+stubby_port=@8053
+stubby=$stubby_ip$stubby_port
 
 sed \
     -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
     -e "s/@RR_CACHE_SIZE@/${rr_cache_size}/" \
     -e "s/@THREADS@/${threads}/" \
+    -e "s/@STUBBY@/${stubby}/" \
     > /opt/unbound/etc/unbound/unbound.conf << EOT
 server:
   verbosity: 1
@@ -75,7 +79,7 @@ server:
   include: /opt/unbound/etc/unbound/a-records.conf
   forward-zone:
     name: "."
-    forward-host: stubby@8053
+    forward-addr: @STUBBY@
 
 remote-control:
   control-enable: no

@@ -82,25 +82,25 @@ tls_ca_path: "/etc/ssl/certs/"
 upstream_recursive_servers:
 
 # IPv4 addresses
-## Quad 9 'secure' service - Filters, does DNSSEC, doesn't send ECS
-   - address_data: 9.9.9.9
-     tls_auth_name: "dns.quad9.net"
-   - address_data: 149.112.112.112
-     tls_auth_name: "dns.quad9.net"
-
 ## Cloudflare 1.1.1.1 and 1.0.0.1
-#  - address_data: 1.1.1.1
-#    tls_auth_name: "cloudflare-dns.com"
-#  - address_data: 1.0.0.1
-#    tls_auth_name: "cloudflare-dns.com"
+  - address_data: 1.1.1.1
+    tls_auth_name: "cloudflare-dns.com"
+  - address_data: 1.0.0.1
+    tls_auth_name: "cloudflare-dns.com"
+
+## Quad 9 'secure' service - Filters, does DNSSEC, doesn't send ECS
+#   - address_data: 9.9.9.9
+#     tls_auth_name: "dns.quad9.net"
+#   - address_data: 149.112.112.112
+#     tls_auth_name: "dns.quad9.net"
 
 #IPv6 addresses
-## Quad 9 'secure' service - Filters, does DNSSEC, doesn't send ECS
-   - address_data: 2620:fe::fe
-     tls_auth_name: "dns.quad9.net"
 ## Cloudflare servers
-#  - address_data: 2606:4700:4700::1111
-#    tls_auth_name: "cloudflare-dns.com"
-#  - address_data: 2606:4700:4700::1001
-#    tls_auth_name: "cloudflare-dns.com"
+  - address_data: 2606:4700:4700::1111
+    tls_auth_name: "cloudflare-dns.com"
+  - address_data: 2606:4700:4700::1001
+    tls_auth_name: "cloudflare-dns.com"
 
+## Quad 9 'secure' service - Filters, does DNSSEC, doesn't send ECS
+#   - address_data: 2620:fe::fe
+#     tls_auth_name: "dns.quad9.net"
