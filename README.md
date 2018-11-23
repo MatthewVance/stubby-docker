@@ -29,6 +29,9 @@ docker-compose up -d
 
 Next, point your DNS to the IP of your Docker host running the Unbound container.
 
+### Use a customized Unbound configuration
+Instead of using this image's default Unbound configuration, you may supply your own unbound.conf. See my [unbound-docker README](https://github.com/MatthewVance/unbound-docker/blob/master/README.md#use-a-customized-unbound-configuration) for further details. Note, you will likely want to apply the concepts from those directions via [docker-compose.yml](https://github.com/MatthewVance/stubby-docker/blob/master/stubby/stubby.yml).
+
 ## Issues
 
 If you have any problems with or questions about this image, please contact me through a [GitHub issue](https://github.com/MatthewVance/stubby-docker/issues).

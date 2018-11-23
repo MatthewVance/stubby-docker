@@ -23,6 +23,8 @@ stubby_ip=$(ping -4 -c 1 stubby | head -n 1 | cut -d ' ' -f 3 | cut -d '(' -f 2 
 stubby_port=@8053
 stubby=$stubby_ip$stubby_port
 
+# Use this default unbound.conf unless a user mounts a custom one:
+if [ ! -f /opt/unbound/etc/unbound/unbound.conf ]; then
 sed \
     -e "s/@MSG_CACHE_SIZE@/${msg_cache_size}/" \
     -e "s/@RR_CACHE_SIZE@/${rr_cache_size}/" \
@@ -89,6 +91,7 @@ remote-control:
   control-enable: no
 
 EOT
+fi
 
 mkdir -p /opt/unbound/etc/unbound/dev && \
 cp -a /dev/random /dev/urandom /opt/unbound/etc/unbound/dev/
