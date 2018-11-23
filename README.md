@@ -29,6 +29,27 @@ docker-compose up -d
 
 Next, point your DNS to the IP of your Docker host running the Unbound container.
 
+### Serve Custom DNS Records for Local Network
+
+While Unbound is not a full authoritative name server, it supports resolving
+custom entries on a small, private LAN. In other words, you can use Unbound to
+resolve fake names such as your-computer.local within your LAN.
+
+To support such custom entries using this image, you need to update the provided
+[a-records.conf](https://github.com/MatthewVance/stubby-docker/blob/master/unbound/a-records.conf) file. This conf file is where you will define your custom entries for forward and reverse resolution.
+
+The `a-records.conf` file should use the following format:
+
+```
+# A Record
+  #local-data: "somecomputer.local. A 192.168.1.1"
+  local-data: “laptop.local. A 192.168.1.2”
+
+# PTR Record
+  #local-data-ptr: "192.168.1.1 somecomputer.local."
+  local-data-ptr: "192.168.1.2 laptop.local."
+```
+
 ### Use a customized Unbound configuration
 Instead of using this image's default Unbound configuration, you may supply your own unbound.conf. See my [unbound-docker README](https://github.com/MatthewVance/unbound-docker/blob/master/README.md#use-a-customized-unbound-configuration) for further details. Note, you will likely want to apply the concepts from those directions via [docker-compose.yml](https://github.com/MatthewVance/stubby-docker/blob/master/stubby/stubby.yml).
 
