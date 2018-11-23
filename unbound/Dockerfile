@@ -27,7 +27,10 @@ RUN set -e -x && \
     make install_sw && \
     apt-get purge -y --auto-remove \
       $BUILD_DEPS && \
-    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -rf \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
 
 FROM debian:stretch
 LABEL maintainer="Matthew Vance"
@@ -79,10 +82,13 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
         --enable-event-api && \
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
-    rm -fr /opt/unbound/share/man && \
     apt-get purge -y --auto-remove \
       $BUILD_DEPS && \
-    rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -fr \
+      /opt/unbound/share/man \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
 
 COPY a-records.conf /opt/unbound/etc/unbound/
 COPY unbound.sh /

@@ -27,7 +27,10 @@ RUN set -e -x && \
     make install_sw && \
     apt-get purge -y --auto-remove \
       $BUILD_DEPS && \
-    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -rf \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
 
 FROM debian:stretch
 LABEL maintainer="Matthew Vance"
@@ -63,7 +66,10 @@ RUN set -e -x && \
     useradd --no-log-init -r -g stubby stubby && \
     apt-get purge -y --auto-remove \
       $BUILD_DEPS && \
-    rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    rm -rf \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
 
 WORKDIR /opt/stubby
 
