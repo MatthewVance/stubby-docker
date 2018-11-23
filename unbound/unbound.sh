@@ -15,6 +15,10 @@ if [ $nproc -gt 1 ]; then
 else
     threads=1
 fi
+# Lookup IP of Stubby container as work around because forward-host did not
+# resolve stubby correctly and does not support @port syntax.
+# This uses ping rather than 'dig +short stubby' to avoid needing dnsutils
+# package.
 stubby_ip=$(ping -4 -c 1 stubby | head -n 1 | cut -d ' ' -f 3 | cut -d '(' -f 2 | cut -d ')' -f 1)
 stubby_port=@8053
 stubby=$stubby_ip$stubby_port
