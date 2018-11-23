@@ -4,7 +4,7 @@ LABEL maintainer="Matthew Vance"
 ENV VERSION_OPENSSL=openssl-1.1.1a \
     SHA256_OPENSSL=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
-    GPG_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
+    OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
 WORKDIR /tmp/src
 
@@ -16,8 +16,8 @@ RUN set -e -x && \
     echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
     curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
     export GNUPGHOME="$(mktemp -d)" && \
-    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$GPG_OPENSSL" \
-    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_OPENSSL" ) && \
+    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" \
+    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" ) && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
     cd $VERSION_OPENSSL && \
