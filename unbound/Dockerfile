@@ -11,7 +11,7 @@ WORKDIR /tmp/src
 RUN set -e -x && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      "$build_deps" && \
+      $build_deps && \
     curl -L "${source_openssl}${version_openssl}.tar.gz" -o openssl.tar.gz && \
     echo "${sha256_openssl} ./openssl.tar.gz" | sha256sum -c - && \
     curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o openssl.tar.gz.asc && \
@@ -27,7 +27,7 @@ RUN set -e -x && \
     make && \
     make install_sw && \
     apt-get purge -y --auto-remove \
-      "$build_deps" && \
+      $build_deps && \
     rm -rf \
       /tmp/* \
       /var/tmp/* \
@@ -61,7 +61,7 @@ COPY --from=openssl /opt/openssl /opt/openssl
 RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make" && \
     set -x && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      "$build_deps" \
+      $build_deps \
       bsdmainutils \
       ldnsutils \
       libevent-2.0 \
@@ -84,7 +84,7 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     apt-get purge -y --auto-remove \
-      "$build_deps" && \
+      $build_deps && \
     rm -fr \
       /opt/unbound/share/man \
       /tmp/* \

@@ -11,7 +11,7 @@ WORKDIR /tmp/src
 RUN set -e -x && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      "$build_deps" && \
+      $build_deps && \
     curl -L "${source_openssl}${version_openssl}.tar.gz" -o openssl.tar.gz && \
     echo "${sha256_openssl} ./openssl.tar.gz" | sha256sum -c - && \
     curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o openssl.tar.gz.asc && \
@@ -27,7 +27,7 @@ RUN set -e -x && \
     make && \
     make install_sw && \
     apt-get purge -y --auto-remove \
-      "$build_deps" && \
+      $build_deps && \
     rm -rf \
       /tmp/* \
       /var/tmp/* \
@@ -45,7 +45,7 @@ COPY --from=builder /opt/openssl /opt/openssl
 RUN set -e -x && \
     build_deps="autoconf build-essential dh-autoreconf git libssl-dev libtool-bin libyaml-dev make m4" && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      "$build_deps" \
+      $build_deps \
       ca-certificates \
       dns-root-data \
       libev4 \
@@ -66,7 +66,7 @@ RUN set -e -x && \
     groupadd -r stubby && \
     useradd --no-log-init -r -g stubby stubby && \
     apt-get purge -y --auto-remove \
-      "$build_deps" && \
+      $build_deps && \
     rm -rf \
       /tmp/* \
       /var/tmp/* \
