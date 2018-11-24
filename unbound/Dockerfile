@@ -9,7 +9,7 @@ ENV version_openssl=openssl-1.1.1a \
 WORKDIR /tmp/src
 
 RUN set -e -x && \
-    build_deps='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
+    build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       "$build_deps" && \
     curl -L "${source_openssl}${version_openssl}.tar.gz" -o openssl.tar.gz && \
@@ -58,7 +58,7 @@ WORKDIR /tmp/src
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
-RUN build_deps='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
+RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make" && \
     set -x && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       "$build_deps" \
