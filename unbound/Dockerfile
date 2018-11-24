@@ -1,32 +1,32 @@
 FROM debian:stretch as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1a \
-    SHA256_OPENSSL=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41 \
-    SOURCE_OPENSSL=https://www.openssl.org/source/ \
-    OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
+ENV version_openssl=openssl-1.1.1a \
+    sha256_openssl=fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41 \
+    source_openssl=https://www.openssl.org/source/ \
+    opgp_openssl=8657ABB260F056B1E5190839D9C4D26D0E604491
 
 WORKDIR /tmp/src
 
 RUN set -e -x && \
-    BUILD_DEPS='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $BUILD_DEPS && \
-    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
-    echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
-    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
+    build_deps='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
+    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+      $build_deps && \
+    curl -L $source_openssl$version_openssl.tar.gz -o openssl.tar.gz && \
+    echo "${sha256_openssl} ./openssl.tar.gz" | sha256sum -c - && \
+    curl -L $source_openssl$version_openssl.tar.gz.asc -o openssl.tar.gz.asc && \
     export GNUPGHOME="$(mktemp -d)" && \
-    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" \
-    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" ) && \
+    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$opgp_openssl" \
+    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$opgp_openssl" ) && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
-    cd $VERSION_OPENSSL && \
+    cd $version_openssl && \
     ./config --prefix=/opt/openssl no-weak-ssl-ciphers no-ssl3 no-shared enable-ec_nistp_64_gcc_128 -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong && \
     make depend && \
     make && \
     make install_sw && \
     apt-get purge -y --auto-remove \
-      $BUILD_DEPS && \
+      $build_deps && \
     rm -rf \
       /tmp/* \
       /var/tmp/* \
@@ -36,18 +36,18 @@ FROM debian:stretch
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    UNBOUND_VERSION=1.8.1 \
-    UNBOUND_SHA256=c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d \
-    UNBOUND_DOWNLOAD_URL=https://www.unbound.net/downloads/unbound-1.8.1.tar.gz \
-    VERSION=1
+    unbound_version=1.8.1 \
+    unbound_sha256=c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d \
+    unbound_download_url=https://www.unbound.net/downloads/unbound-1.8.1.tar.gz \
+    version=1
 
-ENV SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
-    DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
+ENV summary="${NAME} is a validating, recursive, and caching DNS resolver." \
+    description="${NAME} is a validating, recursive, and caching DNS resolver."
 
-LABEL summary="${SUMMARY}" \
-      description="${DESCRIPTION}" \
-      io.k8s.description="${DESCRIPTION}" \
-      io.k8s.display-name="Unbound ${UNBOUND_VERSION}" \
+LABEL summary="${summary}" \
+      description="${description}" \
+      io.k8s.description="${description}" \
+      io.k8s.display-name="Unbound ${unbound_version}" \
       name="mvance/${NAME}" \
       maintainer="Matthew Vance"
 
@@ -57,19 +57,19 @@ WORKDIR /tmp/src
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
-RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
+RUN build_deps='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
     set -x && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $BUILD_DEPS \
+    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+      $build_deps \
       bsdmainutils \
       ldnsutils \
       libevent-2.0 \
       libexpat1 && \
-    curl -sSL $UNBOUND_DOWNLOAD_URL -o unbound.tar.gz && \
-    echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
+    curl -sSL $unbound_download_url -o unbound.tar.gz && \
+    echo "${unbound_sha256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-${UNBOUND_VERSION} && \
+    cd unbound-${unbound_version} && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
@@ -83,7 +83,7 @@ RUN BUILD_DEPS='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     apt-get purge -y --auto-remove \
-      $BUILD_DEPS && \
+      $build_deps && \
     rm -fr \
       /opt/unbound/share/man \
       /tmp/* \
