@@ -11,23 +11,23 @@ WORKDIR /tmp/src
 RUN set -e -x && \
     build_deps='build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev' && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $build_deps && \
-    curl -L $source_openssl$version_openssl.tar.gz -o openssl.tar.gz && \
+      "$build_deps" && \
+    curl -L "${source_openssl}${version_openssl}.tar.gz" -o openssl.tar.gz && \
     echo "${sha256_openssl} ./openssl.tar.gz" | sha256sum -c - && \
-    curl -L $source_openssl$version_openssl.tar.gz.asc -o openssl.tar.gz.asc && \
+    curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o openssl.tar.gz.asc && \
     GNUPGHOME="$(mktemp -d)" && \
     export GNUPGHOME && \
     ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$opgp_openssl" \
     || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$opgp_openssl" ) && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
-    cd $version_openssl && \
+    cd "$version_openssl" && \
     ./config --prefix=/opt/openssl no-weak-ssl-ciphers no-ssl3 no-shared enable-ec_nistp_64_gcc_128 -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong && \
     make depend && \
     make && \
     make install_sw && \
     apt-get purge -y --auto-remove \
-      $build_deps && \
+      "$build_deps" && \
     rm -rf \
       /tmp/* \
       /var/tmp/* \
@@ -61,16 +61,16 @@ COPY --from=openssl /opt/openssl /opt/openssl
 RUN build_deps='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make' && \
     set -x && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-      $build_deps \
+      "$build_deps" \
       bsdmainutils \
       ldnsutils \
       libevent-2.0 \
       libexpat1 && \
-    curl -sSL $unbound_download_url -o unbound.tar.gz && \
+    curl -sSL "${unbound_download_url}" -o unbound.tar.gz && \
     echo "${unbound_sha256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-${unbound_version} && \
+    cd unbound-"${unbound_version}" && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
@@ -84,7 +84,7 @@ RUN build_deps='ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     apt-get purge -y --auto-remove \
-      $build_deps && \
+      "$build_deps" && \
     rm -fr \
       /opt/unbound/share/man \
       /tmp/* \
