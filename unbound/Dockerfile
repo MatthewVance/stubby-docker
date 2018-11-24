@@ -35,20 +35,20 @@ RUN set -e -x && \
 FROM debian:stretch
 LABEL maintainer="Matthew Vance"
 
-ENV NAME=unbound \
+ENV name=unbound \
     unbound_version=1.8.1 \
     unbound_sha256=c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d \
     unbound_download_url=https://www.unbound.net/downloads/unbound-1.8.1.tar.gz \
     version=1
 
-ENV summary="${NAME} is a validating, recursive, and caching DNS resolver." \
-    description="${NAME} is a validating, recursive, and caching DNS resolver."
+ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
+    description="${name} is a validating, recursive, and caching DNS resolver."
 
 LABEL summary="${summary}" \
       description="${description}" \
       io.k8s.description="${description}" \
       io.k8s.display-name="Unbound ${unbound_version}" \
-      name="mvance/${NAME}" \
+      name="mvance/${name}" \
       maintainer="Matthew Vance"
 
 EXPOSE 53
