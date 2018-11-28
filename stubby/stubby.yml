@@ -12,12 +12,15 @@ resolution_type: GETDNS_RESOLUTION_STUB
 # Ordered list composed of one or more transport protocols: 
 # GETDNS_TRANSPORT_UDP, GETDNS_TRANSPORT_TCP or GETDNS_TRANSPORT_TLS
 #
+# Note: If using Strict mode below, only use GETDNS_TRANSPORT_TLS.
 dns_transport_list:
   - GETDNS_TRANSPORT_TLS
 
 # Selects Strict or Opportunistic Usage profile as described in
 # https://datatracker.ietf.org/doc/draft-ietf-dprive-dtls-and-tls-profiles/
 #
+# For Strict use        GETDNS_AUTHENTICATION_REQUIRED
+# For Opportunistic use GETDNS_AUTHENTICATION_NONE
 tls_authentication: GETDNS_AUTHENTICATION_REQUIRED
 
 # EDNS0 option to pad the size of the DNS query to the given blocksize
