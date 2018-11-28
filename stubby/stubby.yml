@@ -1,3 +1,10 @@
+################################################################################
+######################## STUBBY YAML CONFIG FILE ###############################
+################################################################################
+# For more information see:
+# https://dnsprivacy.org/wiki/display/DP/Configuring+Stubby
+# https://raw.githubusercontent.com/getdnsapi/stubby/develop/stubby.yml.example
+
 # Ordered list composed of one or more transport protocols: 
 # GETDNS_TRANSPORT_UDP, GETDNS_TRANSPORT_TCP or GETDNS_TRANSPORT_TLS
 #
