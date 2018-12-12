@@ -37,9 +37,9 @@ FROM debian:stretch
 LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
-    unbound_version=1.8.2 \
-    unbound_sha256=19f2235a8936d89e7dc919bbfcef355de759f220e36bb5e1e931ac000ed04993 \
-    unbound_download_url=https://nlnetlabs.nl/downloads/unbound/unbound-1.8.2.tar.gz \
+    unbound_version=1.8.3 \
+    unbound_sha256=2b692b8311edfad41e7d0380aac34576060d4176add81dc5db419c79b2a4cecc \
+    unbound_download_url=https://nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz \
     version=1
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
