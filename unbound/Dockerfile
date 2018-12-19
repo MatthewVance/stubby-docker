@@ -63,6 +63,7 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
       bsdmainutils \
+      dnsutils \
       ldnsutils \
       libevent-2.0 \
       libexpat1 && \
@@ -99,5 +100,7 @@ RUN chmod +x /unbound.sh
 WORKDIR /opt/unbound/
 
 ENV PATH /opt/unbound/sbin:$PATH
+
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD dig @127.0.0.1 cloudflare.com || exit 1
 
 CMD ["/unbound.sh"]
