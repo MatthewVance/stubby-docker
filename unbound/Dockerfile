@@ -33,26 +33,12 @@ RUN set -e -x && \
       /var/tmp/* \
       /var/lib/apt/lists/*
 
-FROM debian:stretch
+FROM debian:stretch as unbound
 LABEL maintainer="Matthew Vance"
 
-ENV name=unbound \
-    unbound_version=1.8.3 \
+ENV unbound_version=1.8.3 \
     unbound_sha256=2b692b8311edfad41e7d0380aac34576060d4176add81dc5db419c79b2a4cecc \
-    unbound_download_url=https://nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz \
-    version=1
-
-ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
-    description="${name} is a validating, recursive, and caching DNS resolver."
-
-LABEL summary="${summary}" \
-      description="${description}" \
-      io.k8s.description="${description}" \
-      io.k8s.display-name="Unbound ${unbound_version}" \
-      name="mvance/${name}" \
-      maintainer="Matthew Vance"
-
-EXPOSE 53
+    unbound_download_url="https://nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
 
 WORKDIR /tmp/src
 
@@ -91,6 +77,40 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
       /var/tmp/* \
       /var/lib/apt/lists/*
 
+FROM debian:stretch
+LABEL maintainer="Matthew Vance"
+
+ENV name=unbound \
+    unbound_version=1.8.3 \
+    version=1.1
+
+ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
+    description="${name} is a validating, recursive, and caching DNS resolver."
+
+LABEL summary="${summary}" \
+      description="${description}" \
+      io.k8s.description="${description}" \
+      io.k8s.display-name="Unbound ${unbound_version}" \
+      name="mvance/${name}" \
+      maintainer="Matthew Vance"
+
+WORKDIR /tmp/src
+
+COPY --from=unbound /opt/ /opt/
+
+RUN set -x && \
+    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+      bsdmainutils \
+      ldnsutils \
+      libevent-2.0 \
+      libexpat1 && \
+    groupadd _unbound && \
+    useradd -g _unbound -s /etc -d /dev/null _unbound && \
+   rm -fr \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
+
 COPY a-records.conf /opt/unbound/etc/unbound/
 COPY unbound.sh /
 
@@ -99,6 +119,8 @@ RUN chmod +x /unbound.sh
 WORKDIR /opt/unbound/
 
 ENV PATH /opt/unbound/sbin:$PATH
+
+EXPOSE 53
 
 HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 cloudflare.com || exit 1
 
