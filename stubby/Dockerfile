@@ -1,4 +1,4 @@
-FROM debian:stretch as builder
+FROM debian:stretch as openssl
 LABEL maintainer="Matthew Vance"
 
 ENV version_openssl=openssl-1.1.1a \
@@ -33,17 +33,93 @@ RUN set -e -x && \
       /var/tmp/* \
       /var/lib/apt/lists/*
 
+FROM debian:stretch as getdns
+LABEL maintainer="Matthew Vance"
+
+ENV version_getdns=getdns-1.5.0 \
+    sha256_getdns=577182c3ace919ee70cee5629505581a10dc530bd53fe5c241603ea91c84fa84 \
+    source_getdns=https://getdnsapi.net/dist/ \
+    opgp_getdns=DC34EE5DB2417BCC151E5100E5F8F8212F77A498
+
+WORKDIR /tmp/src
+
+COPY --from=openssl /opt /opt
+
+
+RUN set -e -x && \
+    build_deps="\
+                autoconf \
+                build-essential \
+                ca-certificates \
+                curl \
+                dh-autoreconf \
+                dirmngr \
+                gnupg \
+                libssl-dev \
+                libtool-bin \
+                libyaml-dev \
+                make \
+                m4 \
+               " && \
+    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+      $build_deps && \
+    curl -L "${source_getdns}${version_getdns}.tar.gz" -o getdns.tar.gz && \
+    echo "${sha256_getdns} ./getdns.tar.gz" | sha256sum -c - && \
+    curl -L "${source_getdns}${version_getdns}.tar.gz.asc" -o getdns.tar.gz.asc && \
+    GNUPGHOME="$(mktemp -d)" && \
+    export GNUPGHOME && \
+    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$opgp_getdns" \
+    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$opgp_getdns" ) && \
+    gpg --batch --verify getdns.tar.gz.asc getdns.tar.gz && \
+    tar xzf getdns.tar.gz && \
+    cd "$version_getdns" && \
+    libtoolize -ci && \
+    autoreconf -fi && \
+    mkdir build && \
+    cd build && \
+    ../configure \
+        # --with-cc-opt="-O3 -fPIE -fstack-protector-strong -Wformat -Werror=format-security" \
+        # --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro" \
+        --without-libidn \
+        --without-libidn2 \
+        --enable-stub-only \
+        --with-ssl=/opt/openssl && \
+    make && \
+    make install && \
+    apt-get purge -y --auto-remove \
+      $build_deps && \
+    rm -rf \
+      /tmp/* \
+      /var/tmp/* \
+      /var/lib/apt/lists/*
+
 FROM debian:stretch
 LABEL maintainer="Matthew Vance"
+
+ENV version_stubby=0.2.3 \
+    sha256_stubby=5fbe10f421f1313b5e2259b0eec96785af0c5b460431cf86bb6450a11cb3f473 \
+    source_stubby=https://github.com/getdnsapi/stubby/archive/
 
 EXPOSE 8053/udp
 
 WORKDIR /tmp/src
 
-COPY --from=builder /opt/openssl /opt/openssl
+COPY --from=openssl /opt /opt
+COPY --from=getdns /usr/local /usr/local
 
 RUN set -e -x && \
-    build_deps="autoconf build-essential dh-autoreconf git libssl-dev libtool-bin libyaml-dev make m4" && \
+    build_deps="\
+                autoconf \
+                build-essential \
+                ca-certificates \
+                curl \
+                dh-autoreconf \
+                libssl-dev \
+                libtool-bin \
+                libyaml-dev \
+                make \
+                m4 \
+               " && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
       ca-certificates \
@@ -54,14 +130,23 @@ RUN set -e -x && \
       libidn11 \
       libuv1 \
       libyaml-0-2 && \
-    git clone https://github.com/getdnsapi/getdns.git --branch develop && \
-    cd getdns && \
-    git submodule update --init && \
+    curl -L "${source_stubby}v${version_stubby}.tar.gz" -o "stubby.tar.gz" && \
+    echo "${sha256_stubby} stubby.tar.gz" | sha256sum -c - && \
+    tar xzf stubby.tar.gz && \
+    cd "stubby-${version_stubby}"
+RUN set -e -x && pwd && ls -al && \
+    cd "stubby-${version_stubby}" && ls -al && \
     libtoolize -ci && \
     autoreconf -fi && \
     mkdir build && \
     cd build && \
-    ../configure --prefix=/opt/stubby --without-libidn --without-libidn2 --enable-stub-only --with-ssl=/opt/openssl --with-stubby && \
+    ls -al && \
+    ../configure \
+        --prefix=/opt/stubby \
+        # --with-cc-opt="-O3 -fPIE -fstack-protector-strong -Wformat -Werror=format-security" \
+        # --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro" \
+        CFLAGS="-I/usr/local/include" \
+        LDFLAGS="-L/usr/local/lib" && \
     make && \
     make install && \
     groupadd -r stubby && \
@@ -81,6 +166,6 @@ USER stubby:stubby
 
 COPY stubby.yml /opt/stubby/etc/stubby/stubby.yml
 
-HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 -p 8053 cloudflare.com || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 cloudflare.com || exit 1
 
 CMD ["/opt/stubby/bin/stubby"]
