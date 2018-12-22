@@ -166,6 +166,6 @@ USER stubby:stubby
 
 COPY stubby.yml /opt/stubby/etc/stubby/stubby.yml
 
-HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 cloudflare.com || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 -p 8053 cloudflare.com || exit 1
 
 CMD ["/opt/stubby/bin/stubby"]
