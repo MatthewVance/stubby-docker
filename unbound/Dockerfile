@@ -36,9 +36,9 @@ RUN set -e -x && \
 FROM debian:stretch as unbound
 LABEL maintainer="Matthew Vance"
 
-ENV unbound_version=1.8.3 \
-    unbound_sha256=2b692b8311edfad41e7d0380aac34576060d4176add81dc5db419c79b2a4cecc \
-    unbound_download_url="https://nlnetlabs.nl/downloads/unbound/unbound-1.8.3.tar.gz"
+ENV unbound_version=1.9.1 \
+    unbound_sha256=c3c0bf9b86ccba4ca64f93dd4fe7351308ab54293f297a67de5a8914c1dc59c5 \
+    unbound_download_url="https://nlnetlabs.nl/downloads/unbound/unbound-1.9.1.tar.gz"
 
 WORKDIR /tmp/src
 
@@ -81,8 +81,8 @@ FROM debian:stretch
 LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
-    unbound_version=1.8.3 \
-    version=1.1
+    unbound_version=1.9.1 \
+    version=1.0
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
     description="${name} is a validating, recursive, and caching DNS resolver."
