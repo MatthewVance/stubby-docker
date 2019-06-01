@@ -1,10 +1,10 @@
 FROM debian:stretch as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV version_openssl=openssl-1.1.1b \
-    sha256_openssl=5c557b023230413dfb0756f3137a13e6d726838ccd1430888ad15bfb2b43ea4b \
+ENV version_openssl=openssl-1.1.1c \
+    sha256_openssl=f6fb3079ad15076154eda9413fed42877d668e7069d9b87396d0804fdb3f4c90 \
     source_openssl=https://www.openssl.org/source/ \
-    opgp_openssl=8657ABB260F056B1E5190839D9C4D26D0E604491
+    opgp_openssl=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C
 
 WORKDIR /tmp/src
 
@@ -82,7 +82,7 @@ LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
     unbound_version=1.9.1 \
-    version=1.0
+    version=1.1
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
     description="${name} is a validating, recursive, and caching DNS resolver."
