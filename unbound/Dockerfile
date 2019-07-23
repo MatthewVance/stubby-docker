@@ -1,4 +1,4 @@
-FROM debian:stretch as openssl
+FROM debian:buster as openssl
 LABEL maintainer="Matthew Vance"
 
 ENV version_openssl=openssl-1.1.1c \
@@ -33,7 +33,7 @@ RUN set -e -x && \
       /var/tmp/* \
       /var/lib/apt/lists/*
 
-FROM debian:stretch as unbound
+FROM debian:buster as unbound
 LABEL maintainer="Matthew Vance"
 
 ENV unbound_version=1.9.1 \
@@ -50,7 +50,7 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
       $build_deps \
       bsdmainutils \
       ldnsutils \
-      libevent-2.0 \
+      libevent-2.1-6 \
       libexpat1 && \
     curl -sSL "${unbound_download_url}" -o unbound.tar.gz && \
     echo "${unbound_sha256} *unbound.tar.gz" | sha256sum -c - && \
@@ -77,12 +77,12 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
       /var/tmp/* \
       /var/lib/apt/lists/*
 
-FROM debian:stretch
+FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
     unbound_version=1.9.1 \
-    version=1.1
+    version=1.2
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
     description="${name} is a validating, recursive, and caching DNS resolver."
@@ -102,7 +102,7 @@ RUN set -x && \
     debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       bsdmainutils \
       ldnsutils \
-      libevent-2.0 \
+      libevent-2.1-6 \
       libexpat1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \

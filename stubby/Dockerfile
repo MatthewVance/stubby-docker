@@ -1,4 +1,4 @@
-FROM debian:stretch as builder
+FROM debian:buster as builder
 LABEL maintainer="Matthew Vance"
 
 ENV version_openssl=openssl-1.1.1a \
@@ -33,7 +33,7 @@ RUN set -e -x && \
       /var/tmp/* \
       /var/lib/apt/lists/*
 
-FROM debian:stretch
+FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 EXPOSE 8053/udp
@@ -50,7 +50,7 @@ RUN set -e -x && \
       dns-root-data \
       ldnsutils \
       libev4 \
-      libevent-core-2.0.5 \
+      libevent-core-2.1-6 \
       libidn11 \
       libuv1 \
       libyaml-0-2 && \
