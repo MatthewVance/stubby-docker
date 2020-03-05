@@ -36,27 +36,29 @@ RUN set -e -x && \
 FROM debian:buster as unbound
 LABEL maintainer="Matthew Vance"
 
-ENV unbound_version=1.9.1 \
-    unbound_sha256=c3c0bf9b86ccba4ca64f93dd4fe7351308ab54293f297a67de5a8914c1dc59c5 \
-    unbound_download_url="https://nlnetlabs.nl/downloads/unbound/unbound-1.9.1.tar.gz"
+ENV NAME=unbound \
+    UNBOUND_VERSION=1.10.0 \
+    UNBOUND_SHA256=152f486578242fe5c36e89995d0440b78d64c05123990aae16246b7f776ce955 \
+    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.10.0.tar.gz
 
 WORKDIR /tmp/src
 
 COPY --from=openssl /opt/openssl /opt/openssl
 
-RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev make" && \
+RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev make" && \
     set -x && \
-    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps \
       bsdmainutils \
+      ca-certificates \
       ldnsutils \
       libevent-2.1-6 \
       libexpat1 && \
-    curl -sSL "${unbound_download_url}" -o unbound.tar.gz && \
-    echo "${unbound_sha256} *unbound.tar.gz" | sha256sum -c - && \
+    curl -sSL $UNBOUND_DOWNLOAD_URL -o unbound.tar.gz && \
+    echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-"${unbound_version}" && \
+    cd unbound-1.10.0 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
@@ -71,18 +73,19 @@ RUN build_deps="ca-certificates curl gcc libc-dev libevent-dev libexpat1-dev mak
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
     apt-get purge -y --auto-remove \
       $build_deps && \
-    rm -fr \
-      /opt/unbound/share/man \
-      /tmp/* \
-      /var/tmp/* \
-      /var/lib/apt/lists/*
+    rm -rf \
+        /opt/unbound/share/man \
+        /tmp/* \
+        /var/tmp/* \
+        /var/lib/apt/lists/*
+
 
 FROM debian:buster
 LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
-    unbound_version=1.9.1 \
-    version=1.2
+    unbound_version=1.10.0 \
+    version=1.3
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
     description="${name} is a validating, recursive, and caching DNS resolver."
@@ -96,20 +99,24 @@ LABEL summary="${summary}" \
 
 WORKDIR /tmp/src
 
-COPY --from=unbound /opt/ /opt/
+COPY --from=unbound /opt /opt
 
 RUN set -x && \
-    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       bsdmainutils \
+      ca-certificates \
       ldnsutils \
-      libevent-2.1-6 \
+      libevent-2.1-6\
       libexpat1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
-   rm -fr \
-      /tmp/* \
-      /var/tmp/* \
-      /var/lib/apt/lists/*
+    apt-get purge -y --auto-remove \
+      $build_deps && \
+    rm -rf \
+        /opt/unbound/share/man \
+        /tmp/* \
+        /var/tmp/* \
+        /var/lib/apt/lists/*
 
 COPY a-records.conf /opt/unbound/etc/unbound/
 COPY unbound.sh /
@@ -118,9 +125,10 @@ RUN chmod +x /unbound.sh
 
 WORKDIR /opt/unbound/
 
-ENV PATH /opt/unbound/sbin:$PATH
+ENV PATH /opt/unbound/sbin:"$PATH"
 
-EXPOSE 53
+EXPOSE 53/tcp
+EXPOSE 53/udp
 
 HEALTHCHECK --interval=5s --timeout=3s --start-period=5s CMD drill @127.0.0.1 cloudflare.com || exit 1
 
