@@ -1,27 +1,27 @@
 FROM debian:buster as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV version_openssl=openssl-1.1.1c \
-    sha256_openssl=f6fb3079ad15076154eda9413fed42877d668e7069d9b87396d0804fdb3f4c90 \
-    source_openssl=https://www.openssl.org/source/ \
-    opgp_openssl=7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C
+ENV VERSION_OPENSSL=openssl-1.1.1d \
+    SHA256_OPENSSL=1e3a91bc1f9dfce01af26026f856e064eab4c8ee0a8f457b5ae30b40b8b711f2 \
+    SOURCE_OPENSSL=https://www.openssl.org/source/ \
+    OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
 WORKDIR /tmp/src
 
 RUN set -e -x && \
     build_deps="build-essential ca-certificates curl dirmngr gnupg libidn2-0-dev libssl-dev" && \
-    debian_frontend=noninteractive apt-get update && apt-get install -y --no-install-recommends \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       $build_deps && \
-    curl -L "${source_openssl}${version_openssl}.tar.gz" -o openssl.tar.gz && \
-    echo "${sha256_openssl} ./openssl.tar.gz" | sha256sum -c - && \
-    curl -L "${source_openssl}${version_openssl}.tar.gz.asc" -o openssl.tar.gz.asc && \
+    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz -o openssl.tar.gz && \
+    echo "${SHA256_OPENSSL} ./openssl.tar.gz" | sha256sum -c - && \
+    curl -L $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz.asc -o openssl.tar.gz.asc && \
     GNUPGHOME="$(mktemp -d)" && \
     export GNUPGHOME && \
-    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$opgp_openssl" \
-    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$opgp_openssl" ) && \
+    ( gpg --no-tty --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" \
+    || gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$OPGP_OPENSSL" ) && \
     gpg --batch --verify openssl.tar.gz.asc openssl.tar.gz && \
     tar xzf openssl.tar.gz && \
-    cd "$version_openssl" && \
+    cd $VERSION_OPENSSL && \
     ./config --prefix=/opt/openssl no-weak-ssl-ciphers no-ssl3 no-shared enable-ec_nistp_64_gcc_128 -DOPENSSL_NO_HEARTBEATS -fstack-protector-strong && \
     make depend && \
     make && \
@@ -29,9 +29,9 @@ RUN set -e -x && \
     apt-get purge -y --auto-remove \
       $build_deps && \
     rm -rf \
-      /tmp/* \
-      /var/tmp/* \
-      /var/lib/apt/lists/*
+        /tmp/* \
+        /var/tmp/* \
+        /var/lib/apt/lists/*
 
 FROM debian:buster as unbound
 LABEL maintainer="Matthew Vance"
