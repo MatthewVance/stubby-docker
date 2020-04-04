@@ -68,6 +68,8 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev make" && \
         --with-username=_unbound \
         --with-ssl=/opt/openssl \
         --with-libevent \
+        --enable-tfo-server \
+        --enable-tfo-client \
         --enable-event-api && \
     make install && \
     mv /opt/unbound/etc/unbound/unbound.conf /opt/unbound/etc/unbound/unbound.conf.example && \
@@ -85,7 +87,7 @@ LABEL maintainer="Matthew Vance"
 
 ENV name=unbound \
     unbound_version=1.10.0 \
-    version=1.4
+    version=1.5
 
 ENV summary="${name} is a validating, recursive, and caching DNS resolver." \
     description="${name} is a validating, recursive, and caching DNS resolver."
