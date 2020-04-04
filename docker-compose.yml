@@ -11,6 +11,7 @@ services:
       - "stubby"    
     ports:
      - "53:53/udp"
+     - "53:53/tcp"
     networks:
      - dns
     volumes:
