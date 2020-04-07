@@ -17,7 +17,7 @@ To achieve this, this setup uses two containers, one running Stubby and another 
 
 `sudo docker build -t mvance/stubby:latest .`
 
-`sudo docker build -t mvance/unbound:1.10.0-stubby .`
+_Note: This no longer comes with its own Unbound image/Dockerfile. Instead, it uses includes the necesseary config and references a [standalone Unbound](https://github.com/MatthewVance/unbound-docker) instance._
 
 ### Standard usage
 

@@ -6,7 +6,7 @@ services:
      - dns
     restart: unless-stopped
   unbound:
-    image: "mvance/unbound:1.10.0-stubby"
+    image: "mvance/unbound:latest"
     depends_on:
       - "stubby"    
     ports:
