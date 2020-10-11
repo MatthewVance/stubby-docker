@@ -17,7 +17,7 @@ To achieve this, this setup uses two containers, one running Stubby and another 
 
 `sudo docker build -t mvance/stubby:latest .`
 
-`sudo docker build -t mvance/unbound:1.10.1-stubby .`
+`sudo docker build -t mvance/unbound:1.12.0-stubby .`
 
 ### Standard usage
 
