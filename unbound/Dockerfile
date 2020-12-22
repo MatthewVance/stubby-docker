@@ -1,8 +1,8 @@
 FROM debian:buster as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1h \
-    SHA256_OPENSSL=5c9ca8774bd7b03e5784f26ae9e9e6d749c9da2438545077e6b3d755a06595d9 \
+ENV VERSION_OPENSSL=openssl-1.1.1i \
+    SHA256_OPENSSL=e8be6a35fe41d10603c3cc635e93289ed00bf34b79671a3a4de64fcee00d5242 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
     OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
@@ -46,9 +46,9 @@ FROM debian:buster as unbound
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    UNBOUND_VERSION=1.12.0 \
-    UNBOUND_SHA256=5b9253a97812f24419bf2e6b3ad28c69287261cf8c8fa79e3e9f6d3bf7ef5835 \
-    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.12.0.tar.gz
+    UNBOUND_VERSION=1.13.0 \
+    UNBOUND_SHA256=a954043a95b0326ca4037e50dace1f3a207a0a19e9a4a22f4c6718fc623db2a1 \
+    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.13.0.tar.gz
 
 WORKDIR /tmp/src
 
@@ -67,7 +67,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-1.12.0 && \
+    cd unbound-1.13.0 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
