@@ -1,0 +1,32 @@
+name: Docker Images Action
+
+on: [push]
+
+jobs:
+
+  build:
+    name: Build stubby and unbound
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+
+    - uses: actions/checkout@v1
+    - name: Build stubby
+      working-directory: ./stubby
+      run: docker build -t docker.pkg.github.com/MatthewVance/stubby-docker/stubby:latest . --file Dockerfile --tag stubby:$(date +%s)
+    
+    - name: Push stubby
+      working-directory: ./stubby
+      run: docker push docker.pkg.github.com/MatthewVance/stubby-docker/stubby:latest
+
+    - uses: actions/checkout@v1
+    - name: Build unbound
+      working-directory: ./unbound
+      run: docker build -t docker.pkg.github.com/MatthewVance/stubby-docker/unbound:latest . --file Dockerfile --tag unbound:$(date +%s)
+    
+    - name: Push unbound
+      working-directory: ./unbound
+      run: docker push docker.pkg.github.com/MatthewVance/stubby-docker/unbound:latest
