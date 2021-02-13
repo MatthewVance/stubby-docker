@@ -46,9 +46,9 @@ FROM debian:buster as unbound
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    UNBOUND_VERSION=1.13.0 \
-    UNBOUND_SHA256=a954043a95b0326ca4037e50dace1f3a207a0a19e9a4a22f4c6718fc623db2a1 \
-    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.13.0.tar.gz
+    UNBOUND_VERSION=1.13.1 \
+    UNBOUND_SHA256=8504d97b8fc5bd897345c95d116e0ee0ddf8c8ff99590ab2b4bd13278c9f50b8 \
+    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.13.1.tar.gz
 
 WORKDIR /tmp/src
 
@@ -67,7 +67,7 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-1.13.0 && \
+    cd unbound-1.13.1 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
