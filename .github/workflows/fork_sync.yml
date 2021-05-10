@@ -1,0 +1,14 @@
+name: Sync fork with upstream repo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tgymnich/fork-sync@v1.5.0
+        with:
+          owner: MatthewVance
+          base: fork_sync
+          head: master
