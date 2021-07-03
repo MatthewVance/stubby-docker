@@ -52,7 +52,7 @@ RUN set -e -x && \
 FROM debian:buster as stubby
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_GETDNS=v1.6.0
+ENV VERSION_GETDNS=v1.7.0
 
 WORKDIR /tmp/src
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
