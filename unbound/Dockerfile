@@ -1,8 +1,8 @@
-FROM debian:buster as openssl
+FROM debian:bullseye as openssl
 LABEL maintainer="Matthew Vance"
 
-ENV VERSION_OPENSSL=openssl-1.1.1k \
-    SHA256_OPENSSL=892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5 \
+ENV VERSION_OPENSSL=openssl-3.0.1 \
+    SHA256_OPENSSL=c311ad853353bce796edad01a862c50a8a587f62e7e2100ef465ab53ec9b06d1 \
     SOURCE_OPENSSL=https://www.openssl.org/source/ \
     OPGP_OPENSSL=8657ABB260F056B1E5190839D9C4D26D0E604491
 
@@ -41,13 +41,13 @@ RUN set -e -x && \
         /var/tmp/* \
         /var/lib/apt/lists/*
 
-FROM debian:buster as unbound
+FROM debian:bullseye as unbound
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    UNBOUND_VERSION=1.13.1 \
-    UNBOUND_SHA256=8504d97b8fc5bd897345c95d116e0ee0ddf8c8ff99590ab2b4bd13278c9f50b8 \
-    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.13.1.tar.gz
+    UNBOUND_VERSION=1.14.0 \
+    UNBOUND_SHA256=6ef91cbf02d5299eab39328c0857393de7b4885a2fe7233ddfe3c124ff5a89c8 \
+    UNBOUND_DOWNLOAD_URL=https://nlnetlabs.nl/downloads/unbound/unbound-1.14.0.tar.gz
 
 WORKDIR /tmp/src
 
@@ -60,13 +60,13 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
       bsdmainutils \
       ca-certificates \
       ldnsutils \
-      libevent-2.1-6 \
+      libevent-2.1-7 \
       libexpat1 && \
     curl -sSL $UNBOUND_DOWNLOAD_URL -o unbound.tar.gz && \
     echo "${UNBOUND_SHA256} *unbound.tar.gz" | sha256sum -c - && \
     tar xzf unbound.tar.gz && \
     rm -f unbound.tar.gz && \
-    cd unbound-1.13.1 && \
+    cd unbound-1.14.0 && \
     groupadd _unbound && \
     useradd -g _unbound -s /etc -d /dev/null _unbound && \
     ./configure \
@@ -91,20 +91,13 @@ RUN build_deps="curl gcc libc-dev libevent-dev libexpat1-dev libnghttp2-dev make
         /var/lib/apt/lists/*
 
 
-FROM debian:buster
+FROM debian:bullseye
 LABEL maintainer="Matthew Vance"
 
 ENV NAME=unbound \
-    VERSION=1.3 \
+    VERSION=1.0 \
     SUMMARY="${NAME} is a validating, recursive, and caching DNS resolver." \
     DESCRIPTION="${NAME} is a validating, recursive, and caching DNS resolver."
-
-LABEL summary="${SUMMARY}" \
-      description="${DESCRIPTION}" \
-      io.k8s.description="${DESCRIPTION}" \
-      io.k8s.display-name="Unbound ${UNBOUND_VERSION}" \
-      name="mvance/${NAME}" \
-      maintainer="Matthew Vance"
 
 WORKDIR /tmp/src
 
@@ -115,7 +108,7 @@ RUN set -x && \
       bsdmainutils \
       ca-certificates \
       ldnsutils \
-      libevent-2.1-6 \
+      libevent-2.1-7 \
       libnghttp2-14 \
       libexpat1 && \
     groupadd _unbound && \
@@ -136,6 +129,14 @@ RUN chmod +x /unbound.sh
 WORKDIR /opt/unbound/
 
 ENV PATH /opt/unbound/sbin:"$PATH"
+
+LABEL org.opencontainers.image.version=${UNBOUND_VERSION} \
+      org.opencontainers.image.title="mvance/unbound" \
+      org.opencontainers.image.description="a validating, recursive, and caching DNS resolver" \
+      org.opencontainers.image.url="https://github.com/MatthewVance/stubby-docker" \
+      org.opencontainers.image.vendor="Matthew Vance" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.source="https://github.com/MatthewVance/stubby-docker"
 
 EXPOSE 53/tcp
 EXPOSE 53/udp
