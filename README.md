@@ -2,12 +2,7 @@
 
 ## What does this do?
 
-This allows you to run a Stubby for better DNS over TLS support than Unbound provides without losing the performance benefits of having a local caching DNS resolver.
-
-According to the [Stubby documentation](https://dnsprivacy.org/wiki/display/DP/About+Stubby):
-> Unbound can be configured as a local forwarder using DNS-over-TLS to forward queries. However at the moment Unbound does not have all the TCP/TLC features that Stubby has for example, it cannot support 'Strict' mode, it cannot pad queries to hide query size and it opens a separate connection for every DNS query (Stubby will re-use connections)
->
->However, Unbound is a more mature and stable daemon and may be more reliable today. 
+This allows you to run Stubby without losing the performance benefits of having a local caching DNS resolver. Historically, Stubby had better DNS over TLS support than Unbound. 
 
 To achieve this, this setup uses two containers, one running Stubby and another running Unbound. Unbound exposes DNS over port 53 and forwards requests not in its cache to the Stubby container on port 8053 (not publically exposed). Stubby then performs DNS resolution over TLS. By default, this is configured to use Cloudflare DNS. 
 
