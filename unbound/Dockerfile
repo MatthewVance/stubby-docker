@@ -107,6 +107,7 @@ RUN set -x && \
     DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
       bsdmainutils \
       ca-certificates \
+      iputils-ping \
       ldnsutils \
       libevent-2.1-7 \
       libnghttp2-14 \
